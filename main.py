@@ -1,4 +1,5 @@
 import os
+import logging
 import requests
 from urllib.parse import urlsplit
 
@@ -37,6 +38,10 @@ def download_book(book_id, directory):
 
 
 if __name__ == '__main__':
+    logging.basicConfig(filename='sample.log', filemode='w',
+                        format='%(filename)s - %(levelname)s - %(message)s',
+                        level=logging.ERROR)
+
     directory = f'{os.getcwd()}/books/'
     os.makedirs(directory, exist_ok=True)
 
@@ -47,5 +52,6 @@ if __name__ == '__main__':
             book_id = get_book_id(book_link)
             download_book(book_id, directory)
         except requests.HTTPError:
+            logging.error('Данного id не существует')
             continue
 
