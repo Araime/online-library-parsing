@@ -3,6 +3,7 @@ import logging
 import requests
 from bs4 import BeautifulSoup
 from pathvalidate import sanitize_filename
+from urllib.parse import urljoin
 
 
 def get_book_link(book_id):
@@ -29,9 +30,12 @@ def parse_book_page(book_id):
     title = title_tag.text.split('::')
     book_name = title[0].strip()
     author = title[1].strip()
+    img = soup.find(class_='bookimage').find('img')['src']
+    img_link = urljoin('https://tululu.org', img)
     book_page_information = {
         'book_name': book_name,
-        'author': author
+        'author': author,
+        'img_link': img_link
     }
     return book_page_information
 
@@ -43,6 +47,17 @@ def download_txt(book_id, book_link, book_page_info, folder='books'):
     response = requests.get(book_link)
     response.raise_for_status()
     with open(book_path, 'wb') as file:
+        file.write(response.text)
+
+
+def download_image(book_page_info, folder='images'):
+    url = book_page_info['img_link']
+    img_name = url.split('/')[-1]
+    img_path = os.path.join(folder, img_name)
+    os.makedirs(folder, exist_ok=True)
+    response = requests.get(url)
+    response.raise_for_status()
+    with open(img_path, 'w') as file:
         file.write(response.content)
 
 
@@ -56,6 +71,7 @@ if __name__ == '__main__':
             book_link = get_book_link(book_id)
             book_page_info = parse_book_page(book_id)
             download_txt(book_id, book_link, book_page_info)
+            download_image(book_page_info)
         except requests.HTTPError:
             logging.error(f'Книги с id № {book_id} не существует')
             continue
