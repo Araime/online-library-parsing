@@ -18,7 +18,7 @@ def get_book_link(book_id):
 def check_for_redirect(response):
     history_of_redirects = response.history
     if history_of_redirects:
-        raise requests.HTTPError
+        raise requests.HTTPError(history_of_redirects)
 
 
 def parse_book_page(book_id):
@@ -46,7 +46,7 @@ def download_txt(book_id, book_link, book_page_info, folder='books'):
     os.makedirs(folder, exist_ok=True)
     response = requests.get(book_link)
     response.raise_for_status()
-    with open(book_path, 'wb') as file:
+    with open(book_path, 'w') as file:
         file.write(response.text)
 
 
@@ -57,7 +57,7 @@ def download_image(book_page_info, folder='images'):
     os.makedirs(folder, exist_ok=True)
     response = requests.get(url)
     response.raise_for_status()
-    with open(img_path, 'w') as file:
+    with open(img_path, 'wb') as file:
         file.write(response.content)
 
 
