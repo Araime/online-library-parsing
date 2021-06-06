@@ -36,7 +36,7 @@ def parse_book_page(book_id):
     return book_page_information
 
 
-def download_txt(book_id, book_link, book_page_info, folder='books/'):
+def download_txt(book_id, book_link, book_page_info, folder='books'):
     clean_filename = sanitize_filename(book_page_info['book_name'])
     book_path = os.path.join(folder, f'{book_id}. {clean_filename}.txt')
     os.makedirs(folder, exist_ok=True)
