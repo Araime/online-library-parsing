@@ -1,6 +1,7 @@
 import os
 import logging
 import requests
+import argparse
 from bs4 import BeautifulSoup
 from pathvalidate import sanitize_filename
 from urllib.parse import urljoin
@@ -43,7 +44,6 @@ def parse_book_page(book_id):
         'comments': comments,
         'genre': all_genres
     }
-    print(book_page_information)
     return book_page_information
 
 
@@ -53,7 +53,7 @@ def download_txt(book_id, book_link, book_page_info, folder='books'):
     os.makedirs(folder, exist_ok=True)
     response = requests.get(book_link)
     response.raise_for_status()
-    with open(book_path, 'w') as file:
+    with open(book_path, 'w', encoding='utf-8') as file:
         file.write(response.text)
 
 
@@ -68,12 +68,21 @@ def download_image(book_page_info, folder='images'):
         file.write(response.content)
 
 
+def get_args():
+    parser = argparse.ArgumentParser(description='Программа для скачивания книги и обложки к ней')
+    parser.add_argument('start_id', help='С какой страницы скачивать книги', type=int, default=1)
+    parser.add_argument('end_id', help='По какую страницу скачивать книги', type=int, default=11)
+    args = parser.parse_args()
+    return args
+
+
 if __name__ == '__main__':
+    args = get_args()
     logging.basicConfig(filename='sample.log', filemode='w',
                         format='%(filename)s - %(levelname)s - %(message)s',
                         level=logging.ERROR)
 
-    for book_id in range(1, 11):
+    for book_id in range(args.start_id, args.end_id):
         try:
             book_link = get_book_link(book_id)
             book_page_info = parse_book_page(book_id)
