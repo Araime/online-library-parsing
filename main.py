@@ -32,11 +32,17 @@ def parse_book_page(book_id):
     author = title[1].strip()
     img = soup.find(class_='bookimage').find('img')['src']
     img_link = urljoin('https://tululu.org', img)
+    comments_tags = soup.find_all('div', class_='texts')
+    comments = []
+    for comment in comments_tags:
+        comments.append(comment.span.text)
     book_page_information = {
         'book_name': book_name,
         'author': author,
-        'img_link': img_link
+        'img_link': img_link,
+        'comments': comments
     }
+    print(book_page_information)
     return book_page_information
 
 
