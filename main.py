@@ -2,6 +2,7 @@ import os
 import logging
 import requests
 import argparse
+from tqdm import tqdm
 from bs4 import BeautifulSoup
 from pathvalidate import sanitize_filename
 from urllib.parse import urljoin
@@ -82,7 +83,7 @@ if __name__ == '__main__':
                         format='%(filename)s - %(levelname)s - %(message)s',
                         level=logging.ERROR)
 
-    for book_id in range(args.start_id, args.end_id):
+    for book_id in tqdm(range(args.start_id, args.end_id), ncols=100):
         try:
             book_link = get_book_link(book_id)
             book_page_info = parse_book_page(book_id)

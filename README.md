@@ -59,6 +59,9 @@ pip install -r requirements.txt
 ```python
 python main.py 20 30
 ```
+Прогресс бар отображает скачивание книг:  
+
+<a href="https://ibb.co/jR4pbS5"><img src="https://i.ibb.co/WtKTGL3/2.png" alt="2" border="0"></a>
 
 #### Ведение логов
 
