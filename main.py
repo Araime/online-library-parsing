@@ -35,13 +35,13 @@ def parse_book_page(book_id):
     comments_tags = soup.find_all('div', class_='texts')
     comments = [comment.span.text for comment in comments_tags]
     genre_tag = soup.find('span', class_='d_book').find_all('a')
-    all_genres = [genre.text for genre in genre_tag]
+    genres = [genre.text for genre in genre_tag]
     book_page_information = {
         'book_name': book_name,
         'author': author,
         'img_link': img_link,
         'comments': comments,
-        'genre': all_genres
+        'genre': genres
     }
     return book_page_information
 
