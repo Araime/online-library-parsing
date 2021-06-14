@@ -5,7 +5,7 @@ import argparse
 from tqdm import tqdm
 from bs4 import BeautifulSoup
 from pathvalidate import sanitize_filename
-from urllib.parse import urljoin
+from urllib import parse
 
 
 def get_book_link(book_id):
@@ -31,7 +31,7 @@ def parse_book_page(book_id):
     book_name = title[0].strip()
     author = title[1].strip()
     img = soup.find(class_='bookimage').find('img')['src']
-    img_link = urljoin('https://tululu.org', img)
+    img_link = parse.urljoin('https://tululu.org', img)
     comments_tags = soup.find_all('div', class_='texts')
     comments = [comment.span.text for comment in comments_tags]
     genre_tag = soup.find('span', class_='d_book').find_all('a')
@@ -58,7 +58,8 @@ def download_txt(book_id, book_link, book_page_info, folder='books'):
 
 def download_image(book_page_info, folder='images'):
     url = book_page_info['img_link']
-    img_name = url.split('/')[-1]
+    unquoted_url = parse.unquote(url)
+    img_name = parse.urlparse(unquoted_url).path.rstrip('/').split('/')[-1]
     img_path = os.path.join(folder, img_name)
     os.makedirs(folder, exist_ok=True)
     response = requests.get(url)
