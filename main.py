@@ -13,14 +13,12 @@ def get_book_link(book_id):
     payload = {'id': book_id}
     response = requests.get(url, params=payload)
     check_for_redirect(response)
-    book_link = response.url
-    return book_link
+    return response.url
 
 
 def check_for_redirect(response):
-    history_of_redirects = response.history
-    if history_of_redirects:
-        raise requests.HTTPError(history_of_redirects)
+    if response.history:
+        raise requests.HTTPError(response.history)
 
 
 def parse_book_page(book_id):
